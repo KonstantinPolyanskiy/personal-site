@@ -42,7 +42,7 @@ func (lr *Registry) log(moduleLoggerName, customPath string, level zapcore.Level
 	settings, exists := lr.settings[moduleLoggerName]
 	lr.mu.RUnlock()
 
-	if !exists || !settings.Enabled {
+	if !exists || !settings.Enabled || !settings.IsLevelEnabled(level) {
 		return
 	}
 

@@ -1,13 +1,28 @@
 package logger
 
-import "go.uber.org/zap"
+import (
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+)
 
 // CommonSettings Настройки, которые есть у каждого логгера модуля
 type CommonSettings struct {
 	Enabled              bool
+	EnabledLevels        []string
 	WriteToMainLogFile   bool
 	WriteToModuleLogFile bool
+	WriteToConsole       bool
 	ExternalUrl          string
+}
+
+func (s *CommonSettings) IsLevelEnabled(level zapcore.Level) bool {
+	for _, lvl := range s.EnabledLevels {
+		if lvl == level.String() {
+			return true
+		}
+	}
+
+	return false
 }
 
 type ModuleLogger struct {
