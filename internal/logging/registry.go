@@ -1,4 +1,4 @@
-package logger
+package logging
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ type Registry struct {
 	mainLogger *zap.Logger
 
 	// Ключ - название модуля
-	settings map[string]CommonSettings
+	settings map[string]CommonLoggerSettings
 	loggers  map[string]*zap.Logger
 
 	mu sync.RWMutex
@@ -24,13 +24,12 @@ type Registry struct {
 func NewRegistry(mainLogger *zap.Logger) *Registry {
 	return &Registry{
 		mainLogger: mainLogger,
-		settings:   make(map[string]CommonSettings),
+		settings:   make(map[string]CommonLoggerSettings),
 		loggers:    make(map[string]*zap.Logger),
 	}
 }
 
-// Log Обертка для более удобного использования API Registry
-func (lr *Registry) Log(moduleLoggerName string) *ModuleLogger {
+func (lr *Registry) LoggerFor(moduleLoggerName string) *ModuleLogger {
 	return &ModuleLogger{
 		registry:   lr,
 		moduleName: moduleLoggerName,
@@ -61,7 +60,7 @@ func (lr *Registry) log(moduleLoggerName, customPath string, level zapcore.Level
 	logger.Check(level, msg).Write(fields...)
 }
 
-func (lr *Registry) createModuleLogger(moduleLoggerName, path string, settings CommonSettings) *zap.Logger {
+func (lr *Registry) createModuleLogger(moduleLoggerName, path string, settings CommonLoggerSettings) *zap.Logger {
 	var cores []zapcore.Core
 
 	if settings.WriteToMainLogFile {
@@ -100,12 +99,12 @@ func (lr *Registry) createModuleLogger(moduleLoggerName, path string, settings C
 	lr.loggers[moduleLoggerName] = logger
 	lr.mu.Unlock()
 
-	lr.mainLogger.Info("Initialized new module logger", zap.String("module", moduleLoggerName), zap.String("path", path))
+	lr.mainLogger.Info("Initialized new module logging", zap.String("module", moduleLoggerName), zap.String("path", path))
 
 	return logger
 }
 
-func (lr *Registry) UpdateConfig(moduleLoggerName string, newSettings CommonSettings) {
+func (lr *Registry) UpdateConfig(moduleLoggerName string, newSettings CommonLoggerSettings) {
 	lr.mu.Lock()
 	defer lr.mu.Unlock()
 

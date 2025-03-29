@@ -1,42 +1,6 @@
-package logger
+package logging
 
-import (
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-)
-
-// CommonSettings Настройки, которые есть у каждого логгера модуля
-type CommonSettings struct {
-	Enabled              bool
-	EnabledLevels        []string
-	WriteToMainLogFile   bool
-	WriteToModuleLogFile bool
-	WriteToConsole       bool
-	ExternalUrl          string
-}
-
-func (s *CommonSettings) IsLevelEnabled(level zapcore.Level) bool {
-	for _, lvl := range s.EnabledLevels {
-		if lvl == level.String() {
-			return true
-		}
-	}
-
-	return false
-}
-
-type ModuleLogger struct {
-	registry *Registry
-
-	moduleName string
-	customPath string // Для нетипичного пути к файлу логов модуля
-}
-
-func (ml *ModuleLogger) UseAtypicalPath(path string) *ModuleLogger {
-	ml.customPath = path
-
-	return ml
-}
+import "go.uber.org/zap"
 
 func (ml *ModuleLogger) Info(msg string, fields ...zap.Field) {
 	ml.registry.log(ml.moduleName, ml.customPath, zap.InfoLevel, msg, fields...)
