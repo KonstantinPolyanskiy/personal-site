@@ -1,5 +1,5 @@
 package main
 
 import (
-	_ "../internal/handlers/homepage"
+	_ "personal-site/internal/handlers/homepage"
 )

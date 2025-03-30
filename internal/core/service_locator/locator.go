@@ -13,7 +13,7 @@ type ServiceLocator struct {
 	logger   *logging.ModuleLogger
 }
 
-func NewServiceLocator(lr *logging.Registry) *ServiceLocator {
+func New(lr *logging.Registry) *ServiceLocator {
 	return &ServiceLocator{
 		services: make(map[string]interface{}),
 		logger:   lr.LoggerFor("ServiceLocatorLogger"),
