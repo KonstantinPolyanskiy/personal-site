@@ -57,7 +57,7 @@ func (lr *Registry) log(moduleLoggerName, customPath string, level zapcore.Level
 		logger = lr.createModuleLogger(moduleLoggerName, path, settings)
 	}
 
-	logger.Check(level, msg).Write(fields...)
+	logger.Named(moduleLoggerName).Check(level, msg).Write(fields...)
 }
 
 func (lr *Registry) createModuleLogger(moduleLoggerName, path string, settings CommonLoggerSettings) *zap.Logger {
