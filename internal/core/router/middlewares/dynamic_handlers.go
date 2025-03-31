@@ -11,7 +11,7 @@ func DynamicEnableMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		route := c.FullPath()
 
-		handler, err := handlers.ByPath(route)
+		handler, err := handlers.ByMethodAndPath(c.Request.Method + ":" + route)
 		if err != nil {
 			log.Println(err)
 			c.AbortWithStatus(http.StatusNotFound)
