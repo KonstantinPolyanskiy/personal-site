@@ -35,7 +35,7 @@ func main() {
 
 	registryRequiredService(serviceLocator, settingsService)
 
-	r := router.New(loggerRegistry)
+	r := router.New(loggerRegistry, serviceLocator)
 
 	server := &http.Server{
 		Addr:    ":8080",
